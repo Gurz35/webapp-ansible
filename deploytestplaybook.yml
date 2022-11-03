@@ -1,0 +1,20 @@
+- name: "Generate html file for each host"
+ hosts: All
+ gather_facts: yes
+ vars:
+  host_inventory: "central-inventory"
+  inventory_path: "/var/www/html/inventory"
+tasks :
+  - name: "Create template directory"
+    file:
+      path: "{{inventory_path}}"
+      owner: "apache"
+      group: "apache"
+      mode: "0755"
+      state: "directory"
+    delegate_to: "{{host_inventory}}"
+  - name: "html file generation"
+    template:
+      src: "machine.html.j2"
+      dest: "{{inventory_path}}/{{inventory_hostname}}.html"
+    delegate_to: "{{host_inventory}}"
